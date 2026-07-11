@@ -169,7 +169,7 @@ app.post("/api/tts", async (req, res) => {
 
     const ai = new GoogleGenAI({ apiKey });
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash-preview-tts",
+      model: "gemini-2.5-flash",
       contents: [{ parts: [{ text }] }],
       config: {
         responseModalities: ['AUDIO'],
@@ -245,7 +245,7 @@ app.post("/api/chat", async (req, res) => {
         }
         
         const ai = new GoogleGenAI({ apiKey });
-        let modelName = "gemini-3.1-flash-lite-preview";
+        let modelName = "gemini-2.5-flash";
         
         const config: any = {
           systemInstruction: systemInstruction,
@@ -375,7 +375,7 @@ app.post("/api/chat", async (req, res) => {
 
         if (groqKey) {
           const groq = new Groq({ apiKey: groqKey });
-          const modelName = mode === "pro" ? "openai/gpt-oss-120b" : mode === "fast" ? "groq/compound-mini" : "llama-3.1-8b-instant";
+          const modelName = mode === "pro" ? "llama-3.3-70b-versatile" : mode === "fast" ? "llama-3.1-8b-instant" : "llama-3.1-8b-instant";
 
           const stream = await groq.chat.completions.create({
             messages: messages as any,
@@ -439,7 +439,7 @@ app.post("/api/chat", async (req, res) => {
     }
 
   } catch (error: any) {
-    console.error("Chat API Error:", error);
+    if (error?.message === "Premature close" || error?.code === "ERR_STREAM_PREMATURE_CLOSE") { console.log("Client disconnected, stream closed prematurely."); return; } console.error("Chat API Error:", error);
     let errorMessage = "Internal server error while processing your request.";
     const statusCode = error.status || error.statusCode || 500;
 

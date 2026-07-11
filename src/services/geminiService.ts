@@ -194,4 +194,5 @@ export const connectLiveSession = async (callbacks: {
   onclose: () => void;
 }, systemInstruction?: string): Promise<any> => {
   throw new Error("Live Voice is currently disabled in this environment to protect your Gemini API key. It must be migrated to a server-side WebSocket proxy.");
+  return {} as any;
 };
