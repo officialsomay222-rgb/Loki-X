@@ -8,7 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v4
 
@@ -32,14 +31,19 @@ jobs:
     - name: Sync Capacitor
       run: npx cap sync android
 
-    - name: Build APK
+    - name: Generate Release Keystore
+      working-directory: ./android/app
+      run: |
+        keytool -genkey -v -keystore release.keystore -alias release -keyalg RSA -keysize 2048 -validity 10000 -storepass password -keypass password -dname "CN=Unknown, OU=Unknown, O=Unknown, L=Unknown, ST=Unknown, C=Unknown"
+
+    - name: Build Release APK
       working-directory: ./android
       run: |
         chmod +x ./gradlew
-        ./gradlew assembleDebug
+        ./gradlew assembleRelease -Pandroid.injected.signing.storeFile=release.keystore -Pandroid.injected.signing.storePassword=password -Pandroid.injected.signing.keyAlias=release -Pandroid.injected.signing.keyPassword=password
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
-        name: app-debug
-        path: android/app/build/outputs/apk/debug/app-debug.apk
+        name: app-release
+        path: android/app/build/outputs/apk/release/app-release.apk
