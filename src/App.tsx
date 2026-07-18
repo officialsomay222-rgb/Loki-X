@@ -980,7 +980,7 @@ export default function App() {
                   )}
                   <div className="w-full h-full rounded-full overflow-hidden z-[2] border-2 border-white dark:border-[#08080c] relative">
                     <img
-                      src="/logo.png"
+                      src={avatarUrl || "/logo.png"}
                       className="w-full h-full object-cover"
                       alt="Commander"
                     />
